@@ -4,7 +4,7 @@ AC_INIT([libmateweather],
         [libmateweather],
         [https://github.com/Libre-MATE/libmateweather/])
 AC_PREREQ(2.60)
-
+AC_COPYRIGHT([Copyright (C) 2022 Libre MATE])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([build-aux])
