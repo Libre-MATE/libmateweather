@@ -23,55 +23,50 @@
 #include <string.h>
 
 #define MATEWEATHER_I_KNOW_THIS_IS_UNSTABLE
-#include "weather.h"
 #include "weather-priv.h"
+#include "weather.h"
 
-static void
-bom_finish (SoupSession *session, SoupMessage *msg, gpointer data)
-{
-    char *p, *rp;
-    WeatherInfo *info = (WeatherInfo *)data;
+static void bom_finish(SoupSession *session, SoupMessage *msg, gpointer data) {
+  char *p, *rp;
+  WeatherInfo *info = (WeatherInfo *)data;
 
-    g_return_if_fail (info != NULL);
+  g_return_if_fail(info != NULL);
 
-    if (!SOUP_STATUS_IS_SUCCESSFUL (msg->status_code)) {
-        g_warning ("Failed to get BOM forecast data: %d %s.\n",
-		   msg->status_code, msg->reason_phrase);
-        request_done (info, FALSE);
-	return;
-    }
+  if (!SOUP_STATUS_IS_SUCCESSFUL(msg->status_code)) {
+    g_warning("Failed to get BOM forecast data: %d %s.\n", msg->status_code,
+              msg->reason_phrase);
+    request_done(info, FALSE);
+    return;
+  }
 
-    p = strstr (msg->response_body->data, "Forecast for the rest");
-    if (p != NULL) {
-        rp = strstr (p, "The next routine forecast will be issued");
-        if (rp == NULL)
-            info->forecast = g_strdup (p);
-        else
-            info->forecast = g_strndup (p, rp - p);
-    }
+  p = strstr(msg->response_body->data, "Forecast for the rest");
+  if (p != NULL) {
+    rp = strstr(p, "The next routine forecast will be issued");
+    if (rp == NULL)
+      info->forecast = g_strdup(p);
+    else
+      info->forecast = g_strndup(p, rp - p);
+  }
 
-    if (info->forecast == NULL)
-        info->forecast = g_strdup (msg->response_body->data);
+  if (info->forecast == NULL)
+    info->forecast = g_strdup(msg->response_body->data);
 
-    g_print ("%s\n",  info->forecast);
-    request_done (info, TRUE);
+  g_print("%s\n", info->forecast);
+  request_done(info, TRUE);
 }
 
-void
-bom_start_open (WeatherInfo *info)
-{
-    gchar *url;
-    SoupMessage *msg;
-    WeatherLocation *loc;
+void bom_start_open(WeatherInfo *info) {
+  gchar *url;
+  SoupMessage *msg;
+  WeatherLocation *loc;
 
-    loc = info->location;
+  loc = info->location;
 
-    url = g_strdup_printf ("http://www.bom.gov.au/fwo/%s.txt",
-			   loc->zone + 1);
+  url = g_strdup_printf("http://www.bom.gov.au/fwo/%s.txt", loc->zone + 1);
 
-    msg = soup_message_new ("GET", url);
-    soup_session_queue_message (info->session, msg, bom_finish, info);
-    g_free (url);
+  msg = soup_message_new("GET", url);
+  soup_session_queue_message(info->session, msg, bom_finish, info);
+  g_free(url);
 
-    info->requests_pending++;
+  info->requests_pending++;
 }
