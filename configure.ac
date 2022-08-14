@@ -24,9 +24,7 @@ AC_COPYRIGHT([Copyright (C) 2022 Libre MATE])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([build-aux])
-
-AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-xz tar-ustar check-news])
-m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+AM_INIT_AUTOMAKE([1.11 no-dist-gzip dist-xz tar-ustar silent-rules check-news])
 
 # Before making a release, the LT_VERSION string should be modified.
 # The string is of the form C:R:A.
