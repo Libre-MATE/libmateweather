@@ -273,7 +273,6 @@ gboolean mateweather_location_entry_set_city(MateWeatherLocationEntry *entry,
   GtkTreeModel *model;
   GtkTreeIter iter;
   MateWeatherLocation *cmploc;
-  const char *cmpcode;
   char *cmpname;
 
   g_return_val_if_fail(MATEWEATHER_IS_LOCATION_ENTRY(entry), FALSE);
@@ -287,7 +286,7 @@ gboolean mateweather_location_entry_set_city(MateWeatherLocationEntry *entry,
     gtk_tree_model_get(model, &iter, MATEWEATHER_LOCATION_ENTRY_COL_LOCATION,
                        &cmploc, -1);
 
-    cmpcode = mateweather_location_get_code(cmploc);
+    const char *cmpcode = mateweather_location_get_code(cmploc);
     if (!cmpcode || strcmp(cmpcode, code) != 0) continue;
 
     if (city_name) {
