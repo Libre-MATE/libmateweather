@@ -32,6 +32,7 @@
 #include <values.h>
 #endif
 
+#include <glib.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <time.h>
 #include <unistd.h>
@@ -50,15 +51,17 @@
 static void _weather_internal_check(void);
 
 static inline void mateweather_gettext_init(void) {
-  static gsize mateweather_gettext_initialized = FALSE;
+#ifdef ENABLE_NLS
+  static gsize mateweather_gettext_initialized = 0;
 
-  if (G_UNLIKELY(g_once_init_enter(&mateweather_gettext_initialized))) {
+  if (g_once_init_enter(&mateweather_gettext_initialized)) {
     bindtextdomain(GETTEXT_PACKAGE, MATELOCALEDIR);
 #ifdef HAVE_BIND_TEXTDOMAIN_CODESET
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
-#endif
+#endif /* HAVE_BIND_TEXTDOMAIN_CODESET */
     g_once_init_leave(&mateweather_gettext_initialized, TRUE);
   }
+#endif /* ENABLE_NLS */
 }
 
 const char *mateweather_gettext(const char *str) {
